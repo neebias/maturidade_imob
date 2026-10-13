@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Maturidade da Imobiliária</title>
+  <meta name="description" content="Descubra em qual dos 5 estágios de maturidade de gestão a sua imobiliária está hoje." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Instrument+Serif:ital@1&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #0A0A0A;
+      --panel: #111111;
+      --panel-2: #151515;
+      --line: rgba(255, 255, 255, .08);
+      --line-2: rgba(255, 255, 255, .16);
+      --line-3: rgba(255, 255, 255, .3);
+      --text: #F4F3F0;
+      --muted: #9A9893;
+      --dim: #62615D;
+      --ease: cubic-bezier(.2, .7, .2, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter Tight', Inter, system-ui, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    ::selection { background: var(--text); color: var(--bg); }
+
+    .wrap { max-width: 1160px; margin: 0 auto; padding: 0 16px; }
+    @media (min-width: 640px) { .wrap { padding: 0 24px; } }
+
+    .serif { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; letter-spacing: -.01em; }
+    .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+    .ic { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ---------------- Barra de progresso ---------------- */
+    #progress {
+      position: fixed; top: 0; left: 0; z-index: 50;
+      width: 100%; height: 2px;
+      background: var(--text);
+      transform-origin: left; transform: scaleX(0);
+    }
+
+    /* ---------------- Navegação fixa ---------------- */
+    .snav {
+      position: fixed; top: 12px; left: 50%; z-index: 40;
+      display: flex; gap: 2px; padding: 5px;
+      border: 1px solid var(--line-2); border-radius: 999px;
+      background: rgba(12, 12, 12, .94);
+      transform: translate(-50%, -160%);
+      transition: transform .5s var(--ease);
+    }
+    .snav.show { transform: translate(-50%, 0); }
+    .snav a {
+      padding: 7px 14px; border-radius: 999px;
+      font-size: 12.5px; font-weight: 500; color: var(--muted); white-space: nowrap;
+      transition: background .3s ease, color .3s ease;
+    }
+    .snav a:hover { color: var(--text); }
+    .snav a.active { background: var(--text); color: var(--bg); }
+    .snav a span { display: none; margin-left: 6px; font-weight: 400; }
+    @media (min-width: 1100px) { .snav a span { display: inline; } }
+
+    /* ---------------- Hero ---------------- */
+    .hero { position: relative; isolation: isolate; padding-top: 72px; text-align: center; overflow: hidden; }
+    @media (min-width: 768px) { .hero { padding-top: 112px; } }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: -1; pointer-events: none;
+      background:
+        radial-gradient(60% 45% at 50% 0%, rgba(255, 255, 255, .07), transparent 70%),
+        linear-gradient(rgba(255, 255, 255, .045) 1px, transparent 1px) 0 0 / 56px 56px,
+        linear-gradient(90deg, rgba(255, 255, 255, .045) 1px, transparent 1px) 0 0 / 56px 56px;
+      -webkit-mask-image: radial-gradient(75% 65% at 50% 0%, #000 35%, transparent 100%);
+      mask-image: radial-gradient(75% 65% at 50% 0%, #000 35%, transparent 100%);
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px 6px 10px;
+      border: 1px solid var(--line-2); border-radius: 999px;
+      background: rgba(255, 255, 255, .02);
+      font-size: 12.5px; color: var(--muted); letter-spacing: .02em;
+    }
+    .eyebrow svg { width: 16px; height: 16px; color: var(--text); }
+    .hero h1 {
+      max-width: 940px; margin: 28px auto 0;
+      font-size: clamp(40px, 7vw, 84px); font-weight: 500;
+      line-height: 1.02; letter-spacing: -.04em;
+    }
+    .hero h1 .serif { font-size: 1.1em; }
+    .lead {
+      max-width: 640px; margin: 24px auto 0;
+      font-size: clamp(16px, 1.6vw, 19px); color: var(--muted);
+    }
+
+    /* Navegação rápida */
+    .quick {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+      margin-top: 56px; text-align: left;
+    }
+    @media (min-width: 900px) { .quick { grid-template-columns: repeat(5, 1fr); gap: 14px; margin-top: 80px; } }
+    .qcard {
+      display: flex; flex-direction: column; padding: 18px;
+      border: 1px solid var(--line); border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .035), rgba(255, 255, 255, .01));
+      transition: transform .45s var(--ease), border-color .45s ease, background-color .45s ease;
+    }
+    .qcard:last-child { grid-column: span 2; }
+    @media (min-width: 900px) { .qcard:last-child { grid-column: auto; } }
+    .qcard:hover, .qcard:focus-visible {
+      transform: translateY(-4px); border-color: var(--line-3);
+      background-color: rgba(255, 255, 255, .03); outline: none;
+    }
+    .q-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .q-num { font-size: 28px; font-weight: 500; letter-spacing: -.04em; line-height: 1; }
+    .q-ic {
+      display: grid; place-items: center; width: 42px; height: 42px;
+      border: 1px solid var(--line); border-radius: 12px;
+      transition: border-color .45s ease;
+    }
+    .qcard:hover .q-ic { border-color: var(--line-2); }
+    .q-ic svg { width: 22px; height: 22px; }
+    .q-title { margin-top: 28px; font-size: 15px; font-weight: 500; line-height: 1.3; }
+    .q-foot { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 16px; }
+    .floors { display: flex; align-items: flex-end; gap: 3px; height: 18px; }
+    .floors i { width: 5px; border-radius: 1px; background: rgba(255, 255, 255, .12); }
+    .floors i:nth-child(1) { height: 6px; }
+    .floors i:nth-child(2) { height: 9px; }
+    .floors i:nth-child(3) { height: 12px; }
+    .floors i:nth-child(4) { height: 15px; }
+    .floors i:nth-child(5) { height: 18px; }
+    .floors i.on { background: var(--text); }
+    .q-arrow { width: 16px; height: 16px; opacity: .35; transition: transform .45s var(--ease), opacity .45s ease; }
+    .qcard:hover .q-arrow { opacity: 1; transform: translateY(3px); }
+
+    /* Skyline do hero */
+    .skyline { position: relative; height: 150px; margin-top: 72px; }
+    @media (min-width: 768px) { .skyline { height: 190px; margin-top: 96px; } }
+    .skyline svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .sky-line { fill: none; stroke: rgba(244, 243, 240, .45); stroke-width: 1.2; stroke-linejoin: round; }
+    .sky-ground { stroke: var(--line-2); stroke-width: 1; }
+    .sky-draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 3s var(--ease) .7s forwards; }
+    .sky-light { fill: var(--text); opacity: 0; animation: lightOn .6s ease forwards; animation-delay: var(--d); }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    @keyframes lightOn { to { opacity: .8; } }
+
+    /* Entrada do hero */
+    .fade-up { opacity: 0; transform: translateY(20px); animation: fadeUp .9s var(--ease) forwards; animation-delay: var(--d, 0s); }
+    @keyframes fadeUp { to { opacity: 1; transform: none; } }
+
+    /* ---------------- Estágios ---------------- */
+    .stages { padding: 8px 0 120px; }
+    .stage { padding-top: 96px; scroll-margin-top: 40px; }
+    @media (min-width: 960px) { .stage { padding-top: 128px; } }
+
+    .stage-rule {
+      display: flex; align-items: center; gap: 16px; padding-top: 20px;
+      border-top: 1px solid var(--line);
+      font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--dim);
+    }
+    .lvl { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+    .lvl-bars { display: flex; gap: 4px; }
+    .lvl-bars i { width: 16px; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, .12); }
+    .lvl-bars i.on { background: var(--text); }
+    @media (max-width: 420px) { .lvl > span { display: none; } }
+
+    .stage-top { display: grid; gap: 40px; margin-top: 40px; }
+    @media (min-width: 960px) {
+      .stage-top { grid-template-columns: 1.05fr .95fr; gap: 72px; align-items: center; }
+      .stage:nth-child(even) .art { order: -1; }
+    }
+
+    .big-num {
+      font-size: clamp(72px, 11vw, 150px); font-weight: 500;
+      line-height: .85; letter-spacing: -.06em;
+      color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, .25);
+    }
+    .tag {
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 28px;
+      padding: 6px 12px; border: 1px solid var(--line-2); border-radius: 999px;
+      background: rgba(255, 255, 255, .03);
+      font-size: 12.5px; font-weight: 500;
+    }
+    .tag::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--text); }
+    .stage h2 {
+      margin-top: 16px;
+      font-size: clamp(32px, 4.4vw, 56px); font-weight: 500;
+      line-height: 1.04; letter-spacing: -.035em;
+    }
+    .alert { margin-top: 32px; padding: 2px 0 2px 20px; border-left: 1px solid var(--line-3); }
+    .alert-label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted);
+    }
+    .alert-label svg { width: 15px; height: 15px; }
+    .alert p { margin-top: 10px; font-size: clamp(22px, 2.4vw, 30px); line-height: 1.2; }
+
+    /* Prancha ilustrada */
+    .art {
+      position: relative; aspect-ratio: 4 / 3; overflow: hidden;
+      border: 1px solid var(--line); border-radius: 20px;
+      background:
+        linear-gradient(rgba(255, 255, 255, .03) 1px, transparent 1px) 0 0 / 20px 20px,
+        linear-gradient(90deg, rgba(255, 255, 255, .03) 1px, transparent 1px) 0 0 / 20px 20px,
+        #0D0D0D;
+    }
+    .art::before, .art::after { content: ""; position: absolute; width: 14px; height: 14px; }
+    .art::before { top: 14px; left: 14px; border-top: 1px solid var(--line-3); border-left: 1px solid var(--line-3); }
+    .art::after { right: 14px; bottom: 14px; border-right: 1px solid var(--line-3); border-bottom: 1px solid var(--line-3); }
+    .art svg {
+      position: absolute; inset: 6% 6% 10%; width: 88%; height: 84%;
+      fill: none; stroke: var(--text); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .art .soft { stroke: rgba(244, 243, 240, .38); }
+    .art .solid { fill: #0D0D0D; }
+    .art .lit { fill: var(--text); stroke: none; }
+    .art .glass-win { fill: rgba(255, 255, 255, .05); }
+    .art text { fill: var(--text); stroke: none; font-family: 'JetBrains Mono', monospace; }
+    .art text.label { fill: var(--muted); font-size: 8px; letter-spacing: .08em; }
+    .art-meta, .art figcaption {
+      position: absolute; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim);
+    }
+    .art-meta { top: 16px; right: 20px; }
+    .art figcaption { left: 20px; bottom: 16px; }
+
+    .draw { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.6s var(--ease) var(--d, 0s); }
+    .fade { opacity: 0; transition: opacity 1s ease var(--d, .6s); }
+    .in .draw { stroke-dashoffset: 0; }
+    .in .fade { opacity: 1; }
+
+    /* Cards */
+    .stage-cards { display: grid; gap: 14px; margin-top: 40px; }
+    @media (min-width: 760px) { .stage-cards { grid-template-columns: 1fr 1fr; gap: 16px; } }
+    .card { padding: 26px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); }
+    .card.key { background: var(--panel-2); border-color: var(--line-2); }
+    .card-h {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 12px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--muted);
+    }
+    .card.key .card-h { color: var(--text); }
+    .card-ic { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 10px; color: var(--text); }
+    .card-ic svg { width: 18px; height: 18px; }
+    .card p { margin-top: 18px; font-size: 16px; line-height: 1.65; color: var(--muted); }
+    .card strong { color: var(--text); font-weight: 600; }
+
+    /* Reveal */
+    .rv { opacity: 0; transform: translateY(24px); transition: opacity .9s var(--ease) var(--d, 0s), transform .9s var(--ease) var(--d, 0s); }
+    .in .rv { opacity: 1; transform: none; }
+
+    footer { padding: 32px 0; border-top: 1px solid var(--line); text-align: center; font-size: 12px; color: var(--dim); }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .fade-up, .rv, .fade { opacity: 1; transform: none; }
+      .draw, .sky-draw { stroke-dashoffset: 0; }
+      .sky-light { opacity: .8; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Ícones -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></symbol>
+    <symbol id="i-terreno" viewBox="0 0 24 24"><path d="M2 20h20"/><path d="M17 20v-7"/><rect x="13" y="7" width="8" height="6" rx="1"/><path d="M4 20v-6l4-3 4 3v6" stroke-dasharray="2 2.2"/></symbol>
+    <symbol id="i-fundacao" viewBox="0 0 24 24"><path d="M2 20h20"/><path d="M5 20V6M12 20V6M19 20V6"/><path d="M5 6h14M5 13h3M16 13h3"/></symbol>
+    <symbol id="i-obra" viewBox="0 0 24 24"><path d="M2 21h20"/><path d="M8 21V4"/><path d="M3 4h18"/><path d="M8 2 3 4M8 2l13 2"/><path d="M17 4v5"/><rect x="15" y="9" width="4" height="3"/><rect x="11" y="15" width="6" height="6"/></symbol>
+    <symbol id="i-edificio" viewBox="0 0 24 24"><path d="M2 21h20"/><path d="M4 21V3h9v18"/><path d="M7 7h1M10 7h0M7 11h1M10 11h0M7 15h1M10 15h0"/><rect x="15" y="14" width="6" height="5" rx="1"/><path d="M16.5 14v-1.5a1.5 1.5 0 0 1 3 0V14"/></symbol>
+    <symbol id="i-skyline" viewBox="0 0 24 24"><path d="M2 21h20"/><rect x="3" y="13" width="5" height="8"/><rect x="9.5" y="8" width="5" height="13"/><rect x="16" y="11" width="5" height="10"/><path d="M3 7.5 8 6l4-1.5 5-1.5 4-1"/><path d="M18.5 2 21 2.5l-1 2.3"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 9v4M12 16.5h.01"/><path d="M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></symbol>
+    <symbol id="i-cenario" viewBox="0 0 24 24"><path d="M3 10.5 10 4l7 6.5"/><path d="M5 9v10h5"/><circle cx="16" cy="16" r="3"/><path d="m18.2 18.2 2.8 2.8"/></symbol>
+    <symbol id="i-diag" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="m9 13 2 2 4-4"/></symbol>
+    <symbol id="i-foco" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 15 6-6M10 9h5v5"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v16M6 14l6 6 6-6"/></symbol>
+  </svg>
+
+  <div id="progress"></div>
+
+  <nav class="snav" id="snav" aria-label="Estágios">
+    <a href="#estagio-1">01<span>Zero Visibilidade</span></a>
+    <a href="#estagio-2">02<span>Funil Raso</span></a>
+    <a href="#estagio-3">03<span>Remendo Operacional</span></a>
+    <a href="#estagio-4">04<span>Operação Engessada</span></a>
+    <a href="#estagio-5">05<span>Preditiva</span></a>
+  </nav>
+
+  <!-- ================= HERO ================= -->
+  <header class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="eyebrow fade-up" style="--d:.05s">
+        <svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>
+        Diagnóstico de Maturidade Imobiliária
+      </div>
+
+      <h1 class="fade-up" style="--d:.15s">Em qual etapa de <span class="serif">maturidade</span> a sua imobiliária está hoje?</h1>
+
+      <p class="lead fade-up" style="--d:.28s">Descubra como a sua operação se comporta atualmente, qual é o próximo gargalo a ser superado e o caminho para escalar com previsibilidade.</p>
+
+      <div class="quick" id="quick">
+        <a class="qcard fade-up" href="#estagio-1" style="--d:.45s">
+          <div class="q-top"><span class="q-num">01</span><span class="q-ic"><svg class="ic"><use href="#i-terreno"/></svg></span></div>
+          <span class="q-title">Zero Visibilidade</span>
+          <div class="q-foot"><span class="floors"><i class="on"></i><i></i><i></i><i></i><i></i></span><svg class="ic q-arrow"><use href="#i-down"/></svg></div>
+        </a>
+        <a class="qcard fade-up" href="#estagio-2" style="--d:.53s">
+          <div class="q-top"><span class="q-num">02</span><span class="q-ic"><svg class="ic"><use href="#i-fundacao"/></svg></span></div>
+          <span class="q-title">Funil Raso</span>
+          <div class="q-foot"><span class="floors"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span><svg class="ic q-arrow"><use href="#i-down"/></svg></div>
+        </a>
+        <a class="qcard fade-up" href="#estagio-3" style="--d:.61s">
+          <div class="q-top"><span class="q-num">03</span><span class="q-ic"><svg class="ic"><use href="#i-obra"/></svg></span></div>
+          <span class="q-title">Remendo Operacional</span>
+          <div class="q-foot"><span class="floors"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span><svg class="ic q-arrow"><use href="#i-down"/></svg></div>
+        </a>
+        <a class="qcard fade-up" href="#estagio-4" style="--d:.69s">
+          <div class="q-top"><span class="q-num">04</span><span class="q-ic"><svg class="ic"><use href="#i-edificio"/></svg></span></div>
+          <span class="q-title">Operação Engessada</span>
+          <div class="q-foot"><span class="floors"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span><svg class="ic q-arrow"><use href="#i-down"/></svg></div>
+        </a>
+        <a class="qcard fade-up" href="#estagio-5" style="--d:.77s">
+          <div class="q-top"><span class="q-num">05</span><span class="q-ic"><svg class="ic"><use href="#i-skyline"/></svg></span></div>
+          <span class="q-title">Operação Preditiva e Experimental</span>
+          <div class="q-foot"><span class="floors"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><svg class="ic q-arrow"><use href="#i-down"/></svg></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Skyline -->
+    <div class="skyline" aria-hidden="true">
+      <svg viewBox="0 0 1200 200" preserveAspectRatio="xMidYMax slice">
+        <path class="sky-line sky-draw" pathLength="1" d="M0 200H20V156L52 130L84 156V200H104V120H150V200H164V84H186V60H200V84H222V200H240V140H290V200H306V162L340 136L374 162V200H392V100H450V200H466V44H484V26H492V44H510V200H526V128H574V200H590V150L624 122L658 150V200H676V92H730V200H744V70H790V200H806V158L838 132L870 158V200H888V110H930V200H944V52H962V34H972V52H990V200H1006V136H1056V200H1070V156L1104 128L1138 156V200H1154V118H1200V200"/>
+        <path class="sky-line" d="M47 200V184H57V200M335 200V184H345V200M619 200V182H629V200M833 200V184H843V200M1099 200V182H1109V200" style="opacity:.6"/>
+        <path class="sky-ground" d="M0 199.5H1200"/>
+        <g>
+          <rect class="sky-light" x="118" y="140" width="5" height="7" style="--d:2.2s"/>
+          <rect class="sky-light" x="130" y="164" width="5" height="7" style="--d:2.9s"/>
+          <rect class="sky-light" x="176" y="100" width="5" height="7" style="--d:2.5s"/>
+          <rect class="sky-light" x="206" y="122" width="5" height="7" style="--d:3.3s"/>
+          <rect class="sky-light" x="256" y="160" width="5" height="7" style="--d:2.7s"/>
+          <rect class="sky-light" x="404" y="120" width="5" height="7" style="--d:3.1s"/>
+          <rect class="sky-light" x="428" y="152" width="5" height="7" style="--d:2.4s"/>
+          <rect class="sky-light" x="476" y="66" width="5" height="7" style="--d:3.5s"/>
+          <rect class="sky-light" x="492" y="112" width="5" height="7" style="--d:2.6s"/>
+          <rect class="sky-light" x="540" y="150" width="5" height="7" style="--d:3.0s"/>
+          <rect class="sky-light" x="690" y="110" width="5" height="7" style="--d:2.8s"/>
+          <rect class="sky-light" x="710" y="152" width="5" height="7" style="--d:3.4s"/>
+          <rect class="sky-light" x="756" y="90" width="5" height="7" style="--d:2.3s"/>
+          <rect class="sky-light" x="772" y="132" width="5" height="7" style="--d:3.2s"/>
+          <rect class="sky-light" x="900" y="130" width="5" height="7" style="--d:2.6s"/>
+          <rect class="sky-light" x="956" y="78" width="5" height="7" style="--d:3.6s"/>
+          <rect class="sky-light" x="972" y="132" width="5" height="7" style="--d:2.9s"/>
+          <rect class="sky-light" x="1022" y="160" width="5" height="7" style="--d:3.3s"/>
+          <rect class="sky-light" x="1170" y="140" width="5" height="7" style="--d:2.5s"/>
+        </g>
+      </svg>
+    </div>
+  </header>
+
+  <!-- ================= ESTÁGIOS ================= -->
+  <main class="stages wrap">
+
+    <!-- 01 -->
+    <section class="stage" id="estagio-1" data-i="0" aria-labelledby="t1">
+      <div class="stage-rule mono"><span>Estágio 01 / 05</span><div class="lvl"><span>Nível</span><div class="lvl-bars"><i class="on"></i><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="stage-top">
+        <div>
+          <div class="big-num rv">01</div>
+          <span class="tag rv" style="--d:.08s">Inconsciente do Processo</span>
+          <h2 id="t1" class="rv" style="--d:.14s">Zero Visibilidade</h2>
+          <blockquote class="alert rv" style="--d:.22s">
+            <span class="alert-label"><svg class="ic"><use href="#i-alert"/></svg>Sinal de alerta</span>
+            <p class="serif">“A operação roda no escuro e na intuição.”</p>
+          </blockquote>
+        </div>
+        <figure class="art rv" style="--d:.1s">
+          <span class="art-meta mono">Prancha 01/05</span>
+          <svg viewBox="0 0 320 240" aria-hidden="true">
+            <path class="soft fade" d="M60 46v8M56 50h8M110 30v6M107 33h6M286 56v8M282 60h8M206 40v4M204 42h4" style="--d:1.2s"/>
+            <path class="draw" pathLength="1" d="M16 204H304"/>
+            <path class="soft fade" d="M30 204l-8 8M50 204l-8 8M70 204l-8 8M90 204l-8 8M110 204l-8 8M130 204l-8 8M150 204l-8 8M170 204l-8 8M190 204l-8 8M210 204l-8 8M230 204l-8 8M250 204l-8 8M270 204l-8 8M290 204l-8 8" style="--d:.5s"/>
+            <g class="soft fade" stroke-dasharray="4 6" style="--d:.7s">
+              <path d="M100 204V140L150 100L200 140V204"/>
+              <path d="M140 204V174H160V204"/>
+              <path d="M114 150h18v16h-18z"/>
+              <path d="M168 150h18v16h-18z"/>
+            </g>
+            <path class="draw" pathLength="1" d="M248 204V152" style="--d:.4s"/>
+            <path class="draw" pathLength="1" d="M220 112H276V152H220Z" style="--d:.6s"/>
+            <text class="fade" x="248" y="141" font-size="26" text-anchor="middle" style="--d:1.3s">?</text>
+            <g class="soft fade" style="--d:1s">
+              <g transform="translate(30 182) rotate(-12)"><rect width="24" height="16" rx="1"/><path d="M5 6h14M5 10h9"/></g>
+              <g transform="translate(58 190) rotate(9)"><rect width="22" height="14" rx="1"/><path d="M4 5h13M4 9h8"/></g>
+              <g transform="translate(46 160) rotate(-28)"><rect width="20" height="14" rx="1"/><path d="M4 5h12M4 9h7"/></g>
+            </g>
+          </svg>
+          <figcaption class="mono">Fig. 01 — Terreno às escuras</figcaption>
+        </figure>
+      </div>
+      <div class="stage-cards">
+        <article class="card rv">
+          <div class="card-h"><span class="card-ic"><svg class="ic"><use href="#i-cenario"/></svg></span>O cenário</div>
+          <p>O gestor <strong>não consegue puxar com facilidade os KPIs mais básicos</strong> do negócio (volume de leads, visitas agendadas e propostas na mesa). Se precisar desses números hoje, depende de <strong>planilhas soltas</strong> ou de <strong>perguntar de boca em boca</strong>.</p>
+        </article>
+        <article class="card key rv" style="--d:.1s">
+          <div class="card-h"><span class="card-ic"><svg class="ic"><use href="#i-diag"/></svg></span>Diagnóstico</div>
+          <p><strong>Ausência de controle básico e centralização de dados.</strong> A prioridade imediata é <strong>criar visibilidade mínima</strong> para entender a saúde real da operação.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 02 -->
+    <section class="stage" id="estagio-2" data-i="1" aria-labelledby="t2">
+      <div class="stage-rule mono"><span>Estágio 02 / 05</span><div class="lvl"><span>Nível</span><div class="lvl-bars"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div></div></div>
+      <div class="stage-top">
+        <div>
+          <div class="big-num rv">02</div>
+          <span class="tag rv" style="--d:.08s">Consciente do Problema</span>
+          <h2 id="t2" class="rv" style="--d:.14s">Funil Raso</h2>
+          <blockquote class="alert rv" style="--d:.22s">
+            <span class="alert-label"><svg class="ic"><use href="#i-alert"/></svg>Sinal de alerta</span>
+            <p class="serif">“Temos os números básicos, mas não enxergamos onde o processo trava.”</p>
+          </blockquote>
+        </div>
+        <figure class="art rv" style="--d:.1s">
+          <span class="art-meta mono">Prancha 02/05</span>
+          <svg viewBox="0 0 320 240" aria-hidden="true">
+            <path class="draw" pathLength="1" d="M16 204H304"/>
+            <path class="soft fade" d="M30 204l-8 8M50 204l-8 8M70 204l-8 8M90 204l-8 8M110 204l-8 8M130 204l-8 8M150 204l-8 8M170 204l-8 8M190 204l-8 8M210 204l-8 8M230 204l-8 8M250 204l-8 8M270 204l-8 8M290 204l-8 8" style="--d:.5s"/>
+            <path class="draw" pathLength="1" d="M86 204V194H234V204" style="--d:.2s"/>
+            <path class="draw" pathLength="1" d="M100 194V84" style="--d:.4s"/>
+            <path class="draw" pathLength="1" d="M160 194V84" style="--d:.5s"/>
+            <path class="draw" pathLength="1" d="M220 194V84" style="--d:.6s"/>
+            <path class="draw" pathLength="1" d="M100 158H220" style="--d:.8s"/>
+            <path class="draw" pathLength="1" d="M100 84H220" style="--d:1s"/>
+            <path class="draw" pathLength="1" d="M100 121H124" style="--d:.9s"/>
+            <path class="draw" pathLength="1" d="M196 121H220" style="--d:.9s"/>
+            <path class="soft fade" stroke-dasharray="3 4" d="M130 110H190V132H130Z" style="--d:1.3s"/>
+            <text class="fade" x="160" y="126" font-size="14" text-anchor="middle" style="--d:1.5s">?</text>
+            <path class="soft draw" pathLength="1" d="M66 194V84" style="--d:.6s"/>
+            <path class="soft fade" d="M62 194h8M62 158h8M62 121h8M62 84h8" style="--d:1s"/>
+            <text class="label fade" x="232" y="180" style="--d:1.2s">LEADS</text>
+            <text class="label fade" x="232" y="143" style="--d:1.3s">VISITAS</text>
+            <text class="label fade" x="232" y="106" style="--d:1.4s">PROPOSTAS</text>
+          </svg>
+          <figcaption class="mono">Fig. 02 — Estrutura sem detalhamento</figcaption>
+        </figure>
+      </div>
+      <div class="stage-cards">
+        <article class="card rv">
+          <div class="card-h"><span class="card-ic"><svg class="ic"><use href="#i-cenario"/></svg></span>O cenário</div>
+          <p>Existem dados de <strong>topo, meio e fundo de funil</strong> (leads, visitas e propostas). O meio do processo não é um escuro total porque a visita está registrada, mas <strong>não há informações além disso</strong> para identificar a causa raiz dos gargalos (ex: tempo de resposta, descarte sem motivo ou falta de perfil).</p>
+        </article>
+        <article class="card key rv" style="--d:.1s">
+          <div class="card-h"><span class="card-ic"><svg class="ic"><use href="#i-diag"/></svg></span>Diagnóstico</div>
+          <p>Há visibilidade geral, mas <strong>falta rastreabilidade e detalhamento de processo</strong> para descobrir <strong>onde a conversão está vazando</strong>.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 03 -->
+    <section class="stage" id="estagio-3" data-i="2" aria-labelledby="t3">
+      <div class="stage-rule mono"><span>Estágio 03 / 05</span><div class="lvl"><span>Nível</span><div class="lvl-bars"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div></div></div>
+      <div class="stage-top">
+        <div>
+          <div class="big-num rv">03</div>
+          <span class="tag rv" style="--d:.08s">Solução Errada para o Diagnóstico Certo</span>
+          <h2 id="t3" class="rv" style="--d:.14s">Remendo Operacional</h2>
+          <blockquote class="alert rv" style="--d:.22s">
+            <span class="alert-label"><svg class="ic"><use href="#i-alert"/></svg>Sinal de alerta</span>
+            <p class="serif">“Identificamos o gargalo, mas tentamos resolver com mais cobrança e burocracia.”</p>
+          </blockquote>
+        </div>
+        <figure class="art rv" style="--d:.1s">
+          <span class="art-meta mono">Prancha 03/05</span>
+          <svg viewBox="0 0 320 240" aria-hidden="true">
+            <path class="draw" pathLength="1" d="M16 204H304"/>
+            <path class="soft fade" d="M30 204l-8 8M50 204l-8 8M70 204l-8 8M90 204l-8 8M110 204l-8 8M130 204l-8 8M150 204l-8 8M170 204l-8 8M190 204l-8 8M210 204l-8 8M230 204l-8 8M250 204l-8 8M270 204l-8 8M290 204l-8 8" style="--d:.5s"/>
+            <path class="draw" pathLength="1" d="M70 204V104H170V204" style="--d:.2s"/>
+            <path class="soft fade" d="M84 118h16v16h-16zM112 118h16v16h-16zM140 118h16v16h-16zM84 146h16v16h-16zM112 146h16v16h-16zM140 146h16v16h-16zM84 174h16v16h-16zM112 174h16v16h-16zM140 174h16v16h-16z" style="--d:.8s"/>
+            <path class="draw" pathLength="1" d="M80 114L104 138M104 114L80 138" style="--d:1.3s"/>
+            <path class="draw" pathLength="1" d="M108 142L132 166M132 142L108 166" style="--d:1.45s"/>
+            <path class="draw" pathLength="1" d="M178 204V96M198 204V96" style="--d:.5s"/>
+            <path class="soft draw" pathLength="1" d="M170 176H206M170 148H206M170 120H206" style="--d:.8s"/>
+            <path class="soft fade" d="M178 204L198 176M178 176L198 148M178 148L198 120" style="--d:1s"/>
+            <path class="draw" pathLength="1" d="M250 204V40M262 204V40" style="--d:.3s"/>
+            <path class="soft fade" d="M250 196L262 184L250 172L262 160L250 148L262 136L250 124L262 112L250 100L262 88L250 76L262 64L250 52" style="--d:.9s"/>
+            <path class="draw" pathLength="1" d="M120 40H300" style="--d:.7s"/>
+            <path class="draw" pathLength="1" d="M256 40V20" style="--d:.9s"/>
+            <path class="soft draw" pathLength="1" d="M256 20L130 40M256 20L300 40" style="--d:1s"/>
+            <path class="solid draw" pathLength="1" d="M282 40V52H300V40" style="--d:1.1s"/>
+            <path class="draw" pathLength="1" d="M150 40V76" style="--d:1.2s"/>
+            <path class="draw" pathLength="1" d="M136 76H164V90H136Z" style="--d:1.35s"/>
+          </svg>
+          <figcaption class="mono">Fig. 03 — Obra cheia de remendos</figcaption>
+        </figure>
+      </div>
+      <div class="stage-cards">
+        <article class="card rv">
+          <div class="card-h"><span class="card-ic"><svg class="ic"><use href="#i-cenario"/></svg></span>O cenário</div>
+          <p>A gestão <strong>sabe onde está o problema</strong> (ex: abordagem incoerente do corretor ou falta de atualização pós-visita), mas tenta resolver <strong>criando atrito</strong> — como automatizar alertas para o gerente cobrar o corretor. Tenta-se consertar um processo falho em vez de <strong>eliminar a necessidade manual da etapa</strong>.</p>
+        </article>
+        <article class="card key rv" style="--d:.1s">
+          <div class="card-h"><span class="card-ic"><svg class="ic"><use href="#i-diag"/></svg></span>Diagnóstico</div>
+          <p><strong>Falta de arquitetura de processos.</strong> A solução real não é automatizar a cobrança, mas <strong>fazer a informação fluir de forma automática</strong> sem depender de digitação manual.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 04 -->
+    <section class="stage" id="estagio-4" data-i="3" aria-labelledby="t4">
+      <div class="stage-rule mono"><span>Estágio 04 / 05</span><div class="lvl"><span>Nível</span><div class="lvl-bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div></div></div>
+      <div class="stage-top">
+        <div>
+          <div class="big-num rv">04</div>
+          <span class="tag rv" style="--d:.08s">Eficiência que Consome e Impede Inovação</span>
+          <h2 id="t4" class="rv" style="--d:.14s">Operação Engessada</h2>
+          <blockquote class="alert rv" style="--d:.22s">
+            <span class="alert-label"><svg class="ic"><use href="#i-alert"/></svg>Sinal de alerta</span>
+            <p class="serif">“A casa está organizada, mas depende 100% da energia do gestor.”</p>
+          </blockquote>
+        </div>
+        <figure class="art rv" style="--d:.1s">
+          <span class="art-meta mono">Prancha 04/05</span>
+          <svg viewBox="0 0 320 240" aria-hidden="true">
+            <path class="draw" pathLength="1" d="M16 204H304"/>
+            <path class="soft fade" d="M30 204l-8 8M50 204l-8 8M70 204l-8 8M90 204l-8 8M110 204l-8 8M130 204l-8 8M150 204l-8 8M170 204l-8 8M190 204l-8 8M210 204l-8 8M230 204l-8 8M250 204l-8 8M270 204l-8 8M290 204l-8 8" style="--d:.5s"/>
+            <path class="draw" pathLength="1" d="M96 204V48H224V204" style="--d:.2s"/>
+            <path class="draw" pathLength="1" d="M88 48H232" style="--d:.5s"/>
+            <path class="soft glass-win fade" d="M110 64h16v18h-16zM138 64h16v18h-16zM166 64h16v18h-16zM194 64h16v18h-16zM110 92h16v18h-16zM138 92h16v18h-16zM166 92h16v18h-16zM194 92h16v18h-16zM110 120h16v18h-16zM138 120h16v18h-16zM166 120h16v18h-16zM194 120h16v18h-16zM110 148h16v18h-16zM138 148h16v18h-16zM166 148h16v18h-16zM194 148h16v18h-16z" style="--d:.8s"/>
+            <path class="draw" pathLength="1" d="M146 204V178H174V204" style="--d:.9s"/>
+            <path class="draw" pathLength="1" d="M154 187V182a6 6 0 0 1 12 0V187" style="--d:1.2s"/>
+            <path class="solid draw" pathLength="1" d="M150 187H170V201H150Z" style="--d:1.3s"/>
+            <circle class="lit fade" cx="160" cy="193" r="1.6" style="--d:1.6s"/>
+            <circle class="draw" pathLength="1" cx="256" cy="149" r="7" style="--d:1s"/>
+            <path class="draw" pathLength="1" d="M254 156L248 182" style="--d:1.1s"/>
+            <path class="draw" pathLength="1" d="M248 182L240 204M248 182L260 204" style="--d:1.2s"/>
+            <path class="draw" pathLength="1" d="M252 164L226 156M251 170L226 174" style="--d:1.3s"/>
+            <path class="draw" pathLength="1" d="M244 112H268V126H244Z" style="--d:1.4s"/>
+            <path class="draw" pathLength="1" d="M268 116h3v6h-3" style="--d:1.5s"/>
+            <rect class="lit fade" x="247" y="115" width="4" height="8" style="--d:1.8s"/>
+          </svg>
+          <figcaption class="mono">Fig. 04 — Prédio de pé à força do gestor</figcaption>
+        </figure>
+      </div>
+      <div class="stage-cards">
+        <article class="card rv">
+          <div class="card-h"><span class="card-ic"><svg class="ic"><use href="#i-cenario"/></svg></span>O cenário</div>
+          <p>A operação roda bem e o básico funciona, mas <strong>consome a energia do líder</strong> para se manter de pé. A estrutura é engessada: <strong>não há margem nem dados estruturados para testar novas estratégias</strong> de vendas (novos canais, abordagens ou scripts) e medir com precisão o que funciona.</p>
+        </article>
+        <article class="card key rv" style="--d:.1s">
+          <div class="card-h"><span class="card-ic"><svg class="ic"><use href="#i-diag"/></svg></span>Diagnóstico</div>
+          <p><strong>Falta de autonomia e capacidade experimental.</strong> A operação funciona, mas <strong>não dá margem para inovação</strong>.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 05 -->
+    <section class="stage" id="estagio-5" data-i="4" aria-labelledby="t5">
+      <div class="stage-rule mono"><span>Estágio 05 / 05</span><div class="lvl"><span>Nível</span><div class="lvl-bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div></div></div>
+      <div class="stage-top">
+        <div>
+          <div class="big-num rv">05</div>
+          <span class="tag rv" style="--d:.08s">Alta Maturidade &amp; Foco em Escala</span>
+          <h2 id="t5" class="rv" style="--d:.14s">Operação Preditiva e Experimental</h2>
+          <blockquote class="alert rv" style="--d:.22s">
+            <span class="alert-label"><svg class="ic"><use href="#i-alert"/></svg>Sinal de alerta</span>
+            <p class="serif">“Não há incêndios para apagar. O foco é eficiência máxima e crescimento.”</p>
+          </blockquote>
+        </div>
+        <figure class="art rv" style="--d:.1s">
+          <span class="art-meta mono">Prancha 05/05</span>
+          <svg viewBox="0 0 320 240" aria-hidden="true">
+            <path class="draw" pathLength="1" d="M16 204H304"/>
+            <path class="soft fade" d="M30 204l-8 8M50 204l-8 8M70 204l-8 8M90 204l-8 8M110 204l-8 8M130 204l-8 8M150 204l-8 8M170 204l-8 8M190 204l-8 8M210 204l-8 8M230 204l-8 8M250 204l-8 8M270 204l-8 8M290 204l-8 8" style="--d:.5s"/>
+            <path class="draw" pathLength="1" d="M40 204V114H100V204" style="--d:.2s"/>
+            <path class="draw" pathLength="1" d="M116 204V74H186V204" style="--d:.3s"/>
+            <path class="draw" pathLength="1" d="M151 74V56" style="--d:.8s"/>
+            <path class="draw" pathLength="1" d="M202 204V94H262V204" style="--d:.4s"/>
+            <path class="draw" pathLength="1" d="M274 204V144H300V204" style="--d:.5s"/>
+            <path class="soft fade" d="M68 128h8v8h-8zM52 146h8v8h-8zM84 146h8v8h-8zM68 164h8v8h-8zM52 182h8v8h-8zM84 182h8v8h-8zM146 88h8v8h-8zM128 106h8v8h-8zM164 106h8v8h-8zM164 124h8v8h-8zM128 142h8v8h-8zM146 160h8v8h-8zM164 160h8v8h-8zM128 178h8v8h-8zM230 108h8v8h-8zM214 126h8v8h-8zM246 126h8v8h-8zM246 144h8v8h-8zM214 162h8v8h-8zM230 162h8v8h-8zM246 180h8v8h-8zM282 176h8v8h-8z" style="--d:.9s"/>
+            <path class="lit fade" d="M52 128h8v8h-8zM84 128h8v8h-8zM68 146h8v8h-8zM52 164h8v8h-8zM84 164h8v8h-8zM68 182h8v8h-8z" style="--d:1.1s"/>
+            <path class="lit fade" d="M128 88h8v8h-8zM164 88h8v8h-8zM146 106h8v8h-8zM128 124h8v8h-8zM146 124h8v8h-8zM146 142h8v8h-8zM164 142h8v8h-8zM128 160h8v8h-8zM146 178h8v8h-8zM164 178h8v8h-8z" style="--d:1.3s"/>
+            <path class="lit fade" d="M214 108h8v8h-8zM246 108h8v8h-8zM230 126h8v8h-8zM214 144h8v8h-8zM230 144h8v8h-8zM246 162h8v8h-8zM214 180h8v8h-8zM230 180h8v8h-8zM282 156h8v8h-8z" style="--d:1.5s"/>
+            <path class="draw" pathLength="1" d="M30 62L100 52L170 40L240 24L292 12" style="--d:1.2s"/>
+            <path class="draw" pathLength="1" d="M280 9L292 12L287 23" style="--d:2s"/>
+            <g class="lit fade" style="--d:1.9s"><circle cx="100" cy="52" r="2.5"/><circle cx="170" cy="40" r="2.5"/><circle cx="240" cy="24" r="2.5"/></g>
+          </svg>
+          <figcaption class="mono">Fig. 05 — Skyline em expansão</figcaption>
+        </figure>
+      </div>
+      <div class="stage-cards">
+        <article class="card rv">
+          <div class="card-h"><span class="card-ic"><svg class="ic"><use href="#i-cenario"/></svg></span>O cenário</div>
+          <p>Os dados <strong>fluem de forma passiva e automática</strong>, a operação é preditiva e o fluxo roda <strong>sem depender de cobrança contínua</strong>. O gestor atua como um <strong>laboratório de crescimento</strong>: testa novas abordagens, valida hipóteses com dados reais e escala o volume com <strong>previsibilidade de receita</strong>.</p>
+        </article>
+        <article class="card key rv" style="--d:.1s">
+          <div class="card-h"><span class="card-ic"><svg class="ic"><use href="#i-foco"/></svg></span>Foco de ação</div>
+          <p><strong>Escalabilidade, otimização contínua de margens</strong> e <strong>testes estratégicos</strong> com base em inteligência de dados.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mono">Os 5 Estágios de Maturidade da Gestão Imobiliária</footer>
+
+  <script>
+    // Revela cada bloco uma única vez ao entrar na tela
+    const reveal = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.add('in'); reveal.unobserve(e.target); }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
+    document.querySelectorAll('.stage-top, .stage-cards').forEach((el) => reveal.observe(el));
+
+    // Navegação fixa: aparece depois que os cards do topo saem da tela
+    const snav = document.getElementById('snav');
+    new IntersectionObserver(([e]) => {
+      snav.classList.toggle('show', !e.isIntersecting && e.boundingClientRect.top < 0);
+    }).observe(document.getElementById('quick'));
+
+    // Estágio ativo: o que cruza o meio da tela
+    const links = [...snav.querySelectorAll('a')];
+    const active = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = +e.target.dataset.i;
+        links.forEach((l, k) => l.classList.toggle('active', k === i));
+      });
+    }, { rootMargin: '-45% 0px -54% 0px' });
+    document.querySelectorAll('.stage').forEach((s) => active.observe(s));
+
+    // Barra de progresso (só transform, uma vez por frame)
+    const bar = document.getElementById('progress');
+    let max = 1, ticking = false;
+    const measure = () => { max = Math.max(1, document.documentElement.scrollHeight - innerHeight); };
+    const paint = () => { bar.style.transform = `scaleX(${scrollY / max})`; ticking = false; };
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(paint); } }, { passive: true });
+    addEventListener('resize', () => { measure(); paint(); });
+    addEventListener('load', () => { measure(); paint(); });
+    measure(); paint();
+  </script>
+</body>
+</html>
